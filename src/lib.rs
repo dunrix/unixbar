@@ -1,4 +1,5 @@
 extern crate chrono;
+extern crate libc_strftime;
 #[macro_use]
 extern crate nom;
 #[cfg(target_os = "linux")]

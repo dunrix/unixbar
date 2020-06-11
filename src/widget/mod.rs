@@ -3,6 +3,7 @@ pub use std::time::Duration;
 pub mod base;
 pub mod bspwm;
 pub mod datetime;
+pub mod strftime;
 #[cfg(feature = "systemstat")]
 pub mod delayed;
 pub mod music;
@@ -16,6 +17,7 @@ pub mod xkb;
 pub use self::base::*;
 pub use self::bspwm::*;
 pub use self::datetime::*;
+pub use self::strftime::*;
 #[cfg(feature = "systemstat")]
 pub use self::delayed::*;
 pub use self::music::*;

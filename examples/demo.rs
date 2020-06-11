@@ -8,6 +8,7 @@
 #[macro_use]
 extern crate unixbar;
 extern crate systemstat;
+extern crate libc;
 use systemstat::{Platform, System};
 use unixbar::*;
 
@@ -17,8 +18,12 @@ fn main() {
         .add(Volume::new(default_volume(),
             |volume|
                 match volume.muted {
-                    false => bfmt![fmt["Volume {}", (volume.volume * 100.0) as i32]],
-                    true => bfmt![fmt["(muted) {}", (volume.volume * 100.0) as i32]]
+                    false => bfmt![
+                        fg["#5cacee"]
+                        fmt["Volume {}", (volume.volume * 100.0) as i32]],
+                    true => bfmt![
+                        fg["#5cacee"]
+                        fmt["(muted) {}", (volume.volume * 100.0) as i32]]
                 }
         ))
 
@@ -51,9 +56,9 @@ fn main() {
             }
         ))
 
-        .add(Text::new(bfmt![click[MouseButton::Left => sh "notify-send hi"]
-                             click[MouseButton::Right => sh "notify-send 'what?'"]
-                             fg["#11bb55"] text[" Hello World! "]]))
+//         .add(Text::new(bfmt![click[MouseButton::Left => sh "notify-send hi"]
+//                              click[MouseButton::Right => sh "notify-send 'what?'"]
+//                              fg["#11bb55"] text[" Hello World! "]]))
 
 //         .add(Bspwm::new(|bsp| Format::Concat(bsp.desktops.iter().map(|d| Box::new({
 //                 let bg = if d.focused { "#99aa11" } else { "#111111" };
@@ -66,7 +71,7 @@ fn main() {
         .add(Periodic::new(
              Duration::from_secs(2),
              || match System::new().memory() {
-                 Ok(mem) => bfmt![bg["#556677"] fmt[" {}/{} RAM ", mem.free.to_string(false).replace(" GB", ""), mem.total]],
+                 Ok(mem) => bfmt![bg["#556677"] fmt[" {}/{} RAM ", mem.free.to_string().replace(" GB", ""), mem.total]],
                  Err(_) => bfmt![fg["#bb1155"] text["error"]],
              }))
 
@@ -79,8 +84,19 @@ fn main() {
              }))
 
         .add(Wrap::new(
-             |f| bfmt![fg["#bb1155"] f],
-             DateTime::new(" %Y-%m-%d %H:%M:%S %z ")))
+             |f| bfmt![fg["#ee9a00"] f],
+             StrfTime::new(" %a %e.%b %H:%M "),
+             // DateTime::new(" %a %e.%b %H:%M ")
+        ))
+
+        .add(Xkb::new(|id| {
+            let layout = match id {
+                0 => "US",
+                1 => "CZ",
+                _ => "??",
+            };
+            bfmt![fg["#ffff00"] fmt["{}", layout]]
+        }))
 
         .run();
 }
